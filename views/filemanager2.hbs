@@ -1,0 +1,87 @@
+<script src="../js/script.js" defer></script>
+
+<aside>
+    <button id="new_dir_btn">Nowy folder</button>
+    <button id="new_file_btn">Nowy plik tekstowy</button>
+
+    <form action="/upload" method="post" enctype="multipart/form-data">
+        <input type="hidden" name="sciezka" value="{{adres}}">
+        <input id="hidden" type="file" name="pliki" required multiple>
+        <div class="upload-box">
+            <label for="hidden">Wybierz pliki</label>
+            <button type="submit" class="upload-submit"><img src="../gfx/upload.png"></button>
+        </div>
+    </form>
+</aside>
+
+{{!-- dialogi --}}
+<dialog id="newfile" class="new-file">
+    <div class="dialogContainer">
+        <form action="/newFile" method="get">
+            <input pattern="[A-Za-z]{1,18}" type="text" name="input1" id="input1">
+            <input type="hidden" name="sciezka" value="{{adres}}">
+            <select name="extensionSelect">
+                <option value=".txt">.txt</option>
+                <option value=".html">.html</option>
+                <option value=".css">.css</option>
+                <option value=".js">.js</option>
+            </select>
+            <button id="ok1" class="ok" type="submit">Dodaj</button>
+            <button id="can1" class="cancel" type="button">Anuluj</button>
+        </form>
+    </div>
+</dialog>
+
+<dialog id="newfolder" class="new-dir">
+    <div class="dialogContainer">
+        <form action="/newFolder" method="get">
+            <input type="text" name="input2" id="input2">
+            <input type="hidden" name="sciezka" value="{{adres}}">
+            <button id="ok2" class="ok" type="submit">Dodaj</button>
+            <button id="can2" class="cancel" type="button">Anuluj</button>
+        </form>
+    </div>
+</dialog>
+
+
+{{!-- divy --}}
+<main>
+    <div class="path">
+        {{#if adres}}
+        {{{nawigacja adres}}}
+        {{/if}}
+    </div>
+
+    <div class="directoriesContainer">
+        {{!-- katalogi --}}
+        {{#each directories }}
+        <div> {{#if ../adres}}
+            <a href="/filemanager2?path={{../adres}}/{{nazwa}}">{{nazwa}}</a>
+        {{else}}
+            <a href="/filemanager2?path={{nazwa}}">{{nazwa}}</a>
+        {{/if}}
+            <img src="../gfx/directory.png">
+            <form action="/delete"> <input type="hidden" name="hidden" value="{{nazwa}}">
+                <input type="hidden" name="sciezka" value="{{../adres}}">
+                <button onclick="usun(event)" class="delButton">x</button>
+            </form>
+        </div>
+        {{/each}}
+    </div>
+
+
+    <div class="fileContainer">
+        {{!-- pliki --}}
+        {{#each files}}
+        <div>
+            {{nazwa}}
+            <img src="{{zdjecie}}">
+            <form action="/delete">
+                <input type="hidden" name="hidden" value="{{nazwa}}">
+                <input type="hidden" name="sciezka" value="{{../adres}}">
+                <button onclick="usun(event)" class="delButton">x</button>
+            </form>
+        </div>
+        {{/each}}
+    </div>
+</main>

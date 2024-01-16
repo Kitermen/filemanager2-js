@@ -1,0 +1,71 @@
+dialog {
+    height: 500px;
+    width: 1000px;
+    position: absolute;
+    top: calc(50% - 250px);
+    left: calc(50% - 500px);
+    border: 5px solid black;
+    border-radius: 10px;
+    background-color: darkgrey;
+}
+
+.dialogContainer{
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+dialog form{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.new-file input[type="text"] {
+    width: 500;
+    height: 100px;
+    font-size: 25px;
+    text-align: center;
+    border: 2px solid black;
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+    border-right: none;
+}
+
+.new-dir input[type="text"] {
+    width: 500;
+    height: 100px;
+    font-size: 25px;
+    text-align: center;
+    border: 2px solid black;
+    border-radius: 10px;
+}
+
+dialog input:focus {
+    outline: none;
+}
+
+dialog select {
+    width: 100px;
+    height: 104px;
+    margin-left: -10px;
+    font-size: 25px;
+    border: 2px solid black;
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+    border-left: none;
+}
+
+dialog select:focus {
+    outline: none;
+}
+
+dialog button {
+    width: 80px;
+    height: 104px;
+    font-size: 20px;
+    border-radius: 10px;
+    margin-left: 10px;
+}

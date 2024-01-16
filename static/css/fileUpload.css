@@ -1,0 +1,76 @@
+aside{
+    width: 250px;
+    height: 100vh;
+    font-family: monospace;
+    text-align: center;
+    padding: 20px 10px 0px 10px;
+    background-color: lightslategrey;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    float: left;
+    border-right: 3px solid black;
+    border-top-right-radius: 20px;
+}
+
+aside > *{
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+    font-size: 22px;
+}
+
+aside > button{
+    height: 50px;
+    width: 100%;
+    margin-bottom: 15px;
+    background-color: wheat;
+    border-radius: 10px;
+    border: 2px solid black;
+    outline: none;
+    cursor: pointer;
+}
+
+aside > button:focus{
+    outline: none;
+}
+
+aside > form{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    border: 2px solid black;
+    border-radius: 10px;
+    background-color: wheat;
+}
+
+aside > form button{
+    border: none;
+    border-left: 2px solid black;
+    outline: none;
+    background-color: transparent;
+    padding-left: 8px;
+    margin-left: 8px;
+    cursor: pointer;
+}
+
+aside img{
+    width: 50px;
+    height: 50px;
+}
+
+aside > form button:focus{
+    border: none;
+    border-left: 2px solid black;
+    outline: none;
+}
+
+.upload-box{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+#hidden{
+    display: none;
+}
