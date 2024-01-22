@@ -1,0 +1,29 @@
+<aside>
+    <button id="btn1">powieksz</button><br>
+    <button id="btn2">zmniejsz</button><br>
+    <button id="btn3">kolor</button><br>
+    <button id="btn4">zapisz ustawienia</button><br>
+    <button id="btn5">zmien nazwe</button><br>
+</aside>
+
+<dialog id="rename2">
+    <div class="dialogcont">
+        <div class="formulo">
+            <form action="/rename2">
+                <input type="text" name="nazwa">
+                <input type="hidden" name="hidden" value="{{nazwapliku}}">
+                <button class="ok" type="submit">zmien nazwe</button>
+                <button id="can4" class="cancel" type="button">cancel</button>
+            </form>
+
+        </div>
+    </div>
+</dialog>
+<div>nazwa pliku: {{nazwapliku}}</div>
+<form action="/edytor" method="post">
+    <div id="numery"></div>
+    <textarea name="edytor" id="edytor" cols="30" rows="10" wrap="off" spellcheck="false">{{wyczytamy}}</textarea>
+    <input type="hidden" name="hidek" value="{{nazwapliku}}">
+    <button type="submit">zapisz zmiany</button>
+</form>
+<script src="/js/edytor.js"></script>

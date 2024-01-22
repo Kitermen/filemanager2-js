@@ -13,17 +13,25 @@ app.engine('hbs', hbs({
     extname: '.hbs',
     partialsDir: "views/partials",
     helpers: {
-        nawigacja: function(path){
+        settingURL: function(path){
             let pathElements = path.split("/");
-            let pathBox = `<div> <a href="/filemanager2" class="pathTeil">home</a></div>`;
+            let pathBox = `<div><a href="/filemanager2" class="pathTeil">home</a></div>`;
             let pathElement = "";
-            for (i = 0; i < pathElements.length; i++) {
+
+            for(i = 0; i < pathElements.length; i += 1){
                 pathElement += pathElements[i] + "/";
-                console.log("POMPOM", pathElement);
-                pathBox += `<div> <a href="/filemanager2?path=${pathElement}" class="pathTeil">&nbsp;> ${pathElements[i]}</a></div>`;
+                // console.log("countercounter", pathElements[i]);
+                pathBox += `<div><a href="/filemanager2?path=${pathElement}" class="pathTeil">&nbsp;&lt; ${pathElements[i]}</a></div>`;
             }
             return pathBox;
         },
+
+        filesAbleToEdit: function(nazwa){
+            let fileExtHelper = nazwa.split(".");
+            if(extensionsArray.includes(fileExtHelper.at(-1).toLowerCase())){
+                return true;
+            }
+        }
     }
 }));
 
@@ -32,47 +40,26 @@ app.use(express.static('static'));
 app.use(express.static('upload'));
 
 const uploadDirPath = path.join(__dirname, "upload");
-let pliki = [];
-let katalogi = [];
-const extensionsArray = ["txt", "html", "css", "js"];
+let filesArray = [];
+let dirsArray = [];
+const extensionsArray = ["txt", "xml", "json", "html", "css", "js"];
 
-function getFileExtension(extension){
+function getFileExtension(extension) {
     let ext = "";
-    switch(extension){
-        case "docx":
-            ext = "../gfx/docx.png";
-            break
-        case "jpeg":
-            ext = "../gfx/jpeg.png";
-            break
-        case "jpg":
-            ext = "../gfx/jpg.png";
-            break
-        case "html":
-            ext = "../gfx/html.png";
-            break
-        case "css":
-            ext = "../gfx/css.png";
-            break  
-        case "js":
-            ext = "../gfx/js.png";
-            break
-        case "pdf":
-            ext = "../gfx/pdf.png";
-            break
-        case "png":
-            ext = "../gfx/png.png";
-            break
-        case "txt":
-            ext = "../gfx/txt.png";
-            break
-        case "zip":
-            ext = "../gfx/zip.png";
-            break
-        default: 
-            ext = "../gfx/other.png";
+    switch (extension) {
+        case "docx": ext = "../gfx/docx.png"; break
+        case "jpeg": ext = "../gfx/jpeg.png"; break
+        case "jpg": ext = "../gfx/jpg.png"; break
+        case "html": ext = "../gfx/html.png"; break
+        case "css": ext = "../gfx/css.png"; break
+        case "js": ext = "../gfx/js.png"; break
+        case "pdf": ext = "../gfx/pdf.png"; break
+        case "png": ext = "../gfx/png.png"; break
+        case "txt": ext = "../gfx/txt.png"; break
+        case "zip": ext = "../gfx/zip.png"; break
+        case "xml": ext = "../gfx/xml.png"; break
+        default: ext = "../gfx/other.png";
     }
-    console.log("11111",ext);
     return ext;
 }
 
@@ -82,87 +69,87 @@ app.get("/", function (req, res) {
     res.redirect('/filemanager2');
 })
 
-app.get("/newFile", function(req, res){
+app.get("/newFile", function (req, res) {
     const fullFileName = `${req.query.input1}${req.query.extensionSelect}`;
-    if(req.query.input1 == ""){
+    if (req.query.input1 == "") {
         res.redirect("/filemanager2");
     }
-    else{
+    else {
         let insideUploadPath = null;
         // console.log(uploadDirPath);
-        if(req.query.sciezka != null){
+        if (req.query.sciezka != null) {
             insideUploadPath = path.join(uploadDirPath, req.query.sciezka);
             // console.log('insideUploadPath2', insideUploadPath);
-        } 
-        else{
+        }
+        else {
             insideUploadPath = uploadDirPath;
         }
 
 
-        if(fs.existsSync(path.join(insideUploadPath, fullFileName))){
-            let pom = 1;
+        if (fs.existsSync(path.join(insideUploadPath, fullFileName))) {
+            let counter = 1;
             let poz = fullFileName.split(".");
             let nazwa = poz.shift();
             let nowa = "";
-            while(true){
-                nowa = `${nazwa}_(${pom}).${poz.join(".")}`;
-                if(fs.existsSync(path.join(insideUploadPath, nowa))){
-                    pom += 1
+            while (true) {
+                nowa = `${nazwa}_(${counter}).${poz.join(".")}`;
+                if (fs.existsSync(path.join(insideUploadPath, nowa))) {
+                    counter += 1
                 }
-                else{
+                else {
                     break;
                 }
             }
-            let splitek = nowa.split(".").at(-1)
-            if(extensionsArray.includes(splitek)){
-                fs.readFile(path.join(__dirname, "static", "defaults", "default." + splitek), (error, data)=>{
+            let fileExt = nowa.split(".").at(-1)
+            if (extensionsArray.includes(fileExt)) {
+                fs.readFile(path.join(__dirname, "static", "samples", "default." + fileExt), (error, data) => {
                     if (error) throw error;
                     fs.writeFile(path.join(insideUploadPath, nowa), data.toString(), (err) => {
-                        if(err) throw err;
-                        if(req.query.sciezka == null){
+                        if (err) throw err;
+                        if (req.query.sciezka == null) {
                             res.redirect("/filemanager2");
                         }
-                        else{
+                        else {
                             res.redirect("/filemanager2?path=" + req.query.sciezka);
                         }
                     })
                 })
-            } 
-            else{
-                fs.writeFile(path.join(insideUploadPath, nowa), "", (err)=>{
-                    if(err) throw err;
-                    if(req.query.sciezka == null){
+            }
+            else {
+                fs.writeFile(path.join(insideUploadPath, nowa), "", (err) => {
+                    if (err) throw err;
+                    if (req.query.sciezka == null) {
                         res.redirect("/filemanager2");
                     }
-                    else{
+                    else {
                         res.redirect("/filemanager2?path=" + req.query.sciezka);
                     }
                 })
             }
-        } 
-        else{
-            let splitek = fullFileName.split(".").at(-1);
-            if(extensionsArray.includes(splitek)){
-                fs.readFile(path.join(__dirname, "static", "defaults", "default." + splitek), (error, data)=>{
-                    if(error) throw error;
-                    fs.writeFile(path.join(insideUploadPath, fullFileName), data.toString(), (err)=>{
-                        if(err) throw err;
-                        if(req.query.sciezka == null){
+        }
+        else {
+            let fileExt = fullFileName.split(".").at(-1);
+            if (extensionsArray.includes(fileExt)) {
+                fs.readFile(path.join(__dirname, "static", "samples", "default." + fileExt), (error, data) => {
+                    if (error) throw error;
+                    fs.writeFile(path.join(insideUploadPath, fullFileName), data.toString(), (err) => {
+                        if (err) throw err;
+                        if (req.query.sciezka == null) {
                             res.redirect("/filemanager2");
                         }
-                        else{
+                        else {
                             res.redirect("/filemanager2?path=" + req.query.sciezka);
                         }
                     })
                 })
-            } 
-            else{
-                fs.writeFile(path.join(insideUploadPath, fullFileName), "", (err)=>{
-                    if(err) throw err;
-                    if(req.query.sciezka == null){
+            }
+            else {
+                fs.writeFile(path.join(insideUploadPath, fullFileName), "", (err) => {
+                    if (err) throw err;
+                    if (req.query.sciezka == null) {
                         res.redirect("/filemanager2");
                     }
-                    else{
+                    else {
                         res.redirect("/filemanager2?path=" + req.query.sciezka);
                     }
                 })
@@ -185,13 +172,13 @@ app.get("/newFolder", function (req, res) {
         }
 
         if (fs.existsSync(path.join(insideUploadPath, req.query.input2))) {
-            let pom = 1
+            let counter = 1
             let nazwa = req.query.input2
             let nowa = ""
             while (true) {
-                nowa = `${nazwa}_(${pom})`
+                nowa = `${nazwa}_(${counter})`
                 if (fs.existsSync(path.join(insideUploadPath, nowa))) {
-                    pom += 1
+                    counter += 1
                 }
                 else {
                     break
@@ -235,28 +222,28 @@ app.get("/filemanager2", function (req, res) {
         insideUploadPath = uploadDirPath
     }
     fs.readdir(insideUploadPath, { withFileTypes: true }, (err, files) => {
-        pliki = []
-        katalogi = []
+        filesArray = []
+        dirsArray = []
         files.forEach(file => {
-            if(file.isFile()){
+            if (file.isFile()) {
                 let fileExtension = file.name.split(".")[1];
-                console.log(fileExtension);
+                // console.log(fileExtension);
                 let obj = {
                     nazwa: file.name,
                     zdjecie: getFileExtension(fileExtension),
                 }
-                pliki.push(obj)
+                filesArray.push(obj)
             }
-            else{
+            else {
                 let obj = {
                     nazwa: file.name,
                 }
-                katalogi.push(obj);
+                dirsArray.push(obj);
             }
         })
         let context = {
-            files: pliki,
-            directories: katalogi,
+            files: filesArray,
+            directories: dirsArray,
             adres: null
         }
 
@@ -267,13 +254,13 @@ app.get("/filemanager2", function (req, res) {
             context.adres = req.query.path
 
         }
-        
-        console.log("ctx",context);
+
+        // console.log("ctx", context);
         res.render('filemanager2.hbs', context)
-
     })
-
 })
+
+
 app.get("/delete", function (req, res) {
     let insideUploadPath = null
     if (req.query.sciezka != null) {
@@ -311,7 +298,10 @@ app.get("/delete", function (req, res) {
     })
 
 })
+
+
 app.post('/upload', function (req, res) {
+    console.log("LOOOOOL");
     let insideUploadPath = null
     let parsujemy = null
 
@@ -321,7 +311,7 @@ app.post('/upload', function (req, res) {
     form.keepExtensions = true
     form.multiples = true
     form.on("field", (name, field) => {
-        console.log(field);
+        // console.log(field);
         parsujemy = field
         if (field != null) {
             insideUploadPath = path.join(uploadDirPath, field)
@@ -330,18 +320,18 @@ app.post('/upload', function (req, res) {
         }
     })
     form.on("file", (err, plik) => {
-        console.log(plik);
+        // console.log(plik);
         if (fs.existsSync(path.join(insideUploadPath, plik.name))) {
 
-            let pom = 1
+            let counter = 1
             let poz = plik.name.split(".")
             let nazwa = poz.shift()
-            console.log(nazwa);
+            // console.log(nazwa);
             let nowa = ""
             while (true) {
-                nowa = `${nazwa}_(${pom}).${poz.join(".")}`
+                nowa = `${nazwa}_(${counter}).${poz.join(".")}`
                 if (fs.existsSync(path.join(insideUploadPath, nowa))) {
-                    pom += 1
+                    counter += 1
                 }
                 else {
                     break
@@ -357,7 +347,7 @@ app.post('/upload', function (req, res) {
             })
         }
     })
-    // form.parse(req)
+    form.parse(req)
     // console.log("RIIIIIIII",req);
     form.on("end", () => {
         if (parsujemy == null) {
@@ -369,6 +359,69 @@ app.post('/upload', function (req, res) {
     })
 
 });
+
+
+app.get("/rename", function (req, res) {
+    let oldDirFullPath = req.query.location
+    let renamedDirPath = path.dirname(oldDirFullPath)
+    let renamedDirFullPath = path.join(renamedDirPath, req.query.newName)
+    console.log("llll",oldDirFullPath);
+
+    if (fs.existsSync(path.join(uploadDirPath, renamedDirFullPath))) {
+        let counter = 1
+        let nazwa = req.query.newName
+        let nowa = ""
+        while (true) {
+            nowa = `${nazwa}_(${counter})`
+            if (fs.existsSync(path.join(uploadDirPath, renamedDirPath, nowa))) {
+                counter += 1
+            }
+            else {
+                break
+            }
+        }
+        fs.rename(path.join(uploadDirPath, oldDirFullPath), path.join(uploadDirPath, renamedDirPath, nowa), (err) => {
+            if (err) throw err
+            res.redirect(`/filemanager2?path=${renamedDirPath + "/" + nowa}`)
+        })
+    }
+    else {
+        fs.rename(path.join(uploadDirPath, oldDirFullPath), path.join(uploadDirPath, renamedDirFullPath), (err) => {
+            if (err) throw err
+            res.redirect(`/filemanager2?path=${renamedDirFullPath}`)
+        })
+    }
+
+})
+
+
+app.get("/edytor", function (req, res) {
+    if (req.query.nazwapliku == undefined){
+        return res.redirect("/filemanager2")
+    }
+    let splituje = req.query.nazwapliku.split("/")
+    if (splituje.includes("..") || splituje.includes(".") || req.query.nazwapliku == "") return res.redirect("/filemanager2")
+    if (fs.existsSync(path.join(rootpath, req.query.nazwapliku))) {
+        let splitujemy = req.query.nazwapliku.split(".")
+        if (rozszerzenia.includes(splitujemy.at(-1).toLowerCase())) {
+            fs.readFile(path.join(rootpath, req.query.nazwapliku), (err, data) => {
+                if (err) throw err
+                let context = {
+                    nazwapliku: req.query.nazwapliku,
+                    wyczytamy: data.toString()
+                }
+                res.render("edytor.hbs", context)
+            })
+        }
+        else{
+            res.redirect("/filemanager2")
+        }
+
+    } else {
+        res.redirect("/filemanager2")
+    }
+})
+
 
 app.listen(PORT, function () {
     console.log("start serwera na porcie " + PORT)

@@ -1,12 +1,12 @@
-main{
+main {
     padding: 20px;
 }
 
-main img{
+main img {
     width: 80px;
 }
 
-.delButton{
+.delButton {
     width: fit-content;
     height: fit-content;
     padding: 0px 5px 0px 5px;
@@ -15,7 +15,7 @@ main img{
     cursor: pointer;
 }
 
-.fileContainer > div > form{
+.fileContainer>div>form {
     width: fit-content;
 }
 
@@ -32,7 +32,7 @@ main img{
     flex-flow: row wrap;
 }
 
-.directoriesContainer > div {
+.directoriesContainer>div {
     background-color: whitesmoke;
     width: fit-content;
     padding: 10px;
@@ -42,7 +42,7 @@ main img{
     font-size: 15px;
 }
 
-.fileContainer > div {
+.fileContainer>div {
     background-color: whitesmoke;
     width: fit-content;
     padding: 10px;
@@ -50,9 +50,10 @@ main img{
     border: 2px solid black;
     border-radius: 10px;
     font-size: 15px;
+    /* text-overflow: ellipsis; */
 }
 
-.path{
+.pathContainer {
     font-size: 20px;
     border: 2px solid black;
     border-radius: 10px;
@@ -65,11 +66,11 @@ main img{
     flex-direction: row;
 }
 
-a{
+a {
     text-decoration: none;
     color: black;
 }
 
-.pathTeil{
+.pathTeil {
     width: fit-content;
 }

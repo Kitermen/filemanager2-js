@@ -2,8 +2,10 @@
 
 <aside>
     <button id="new_dir_btn">Nowy folder</button>
+    {{#if adres}}
+    <button id="dir_rename_btn">Zmiana nazwy folderu</button>
+    {{/if}}
     <button id="new_file_btn">Nowy plik tekstowy</button>
-
     <form action="/upload" method="post" enctype="multipart/form-data">
         <input type="hidden" name="sciezka" value="{{adres}}">
         <input id="hidden" type="file" name="pliki" required multiple>
@@ -18,10 +20,12 @@
 <dialog id="newfile" class="new-file">
     <div class="dialogContainer">
         <form action="/newFile" method="get">
-            <input pattern="[A-Za-z]{1,18}" type="text" name="input1" id="input1">
+            <input pattern="[A-Za-z0-9]{1,18}" type="text" name="input1" id="input1">
             <input type="hidden" name="sciezka" value="{{adres}}">
             <select name="extensionSelect">
                 <option value=".txt">.txt</option>
+                <option value=".xml">.xml</option>
+                <option value=".json">.json</option>
                 <option value=".html">.html</option>
                 <option value=".css">.css</option>
                 <option value=".js">.js</option>
@@ -43,27 +47,38 @@
     </div>
 </dialog>
 
+<dialog id="rename" class="rename" class="rename">
+    <div class="dialogContainer">
+        <form action="/rename" method="get">
+            <input type="text" name="newName">
+            <input type="hidden" name="location" value="{{adres}}">
+            <button class="ok" type="submit">Zmień</button>
+            <button id="can3" class="cancel" type="button">Anuluj</button>
+        </form>
+    </div>
+</dialog>
 
 {{!-- divy --}}
 <main>
-    <div class="path">
+    <div class="pathContainer" id="pathContainer">
         {{#if adres}}
-        {{{nawigacja adres}}}
+        {{{settingURL adres}}}
         {{/if}}
     </div>
 
     <div class="directoriesContainer">
         {{!-- katalogi --}}
         {{#each directories }}
-        <div> {{#if ../adres}}
+        <div>
+            {{#if ../adres}}
             <a href="/filemanager2?path={{../adres}}/{{nazwa}}">{{nazwa}}</a>
-        {{else}}
+            {{else}}
             <a href="/filemanager2?path={{nazwa}}">{{nazwa}}</a>
-        {{/if}}
+            {{/if}}
             <img src="../gfx/directory.png">
             <form action="/delete"> <input type="hidden" name="hidden" value="{{nazwa}}">
                 <input type="hidden" name="sciezka" value="{{../adres}}">
-                <button onclick="usun(event)" class="delButton">x</button>
+                <button onclick="del(event)" class="delButton">x</button>
             </form>
         </div>
         {{/each}}
@@ -74,9 +89,17 @@
         {{!-- pliki --}}
         {{#each files}}
         <div>
+            {{#if (filesAbleToEdit nazwa) }}
+                {{#if ../adres}}
+                    <a href="/edytor?file={{../adres}}/{{nazwa}}">{{nazwa}}</a>
+                {{else}}
+                    <a href="/edytor?file={{nazwa}}">{{nazwa}}</a>
+                {{/if}}
+            {{else}}
             {{nazwa}}
+            {{/if}}
             <img src="{{zdjecie}}">
-            <form action="/delete">
+            <form action="/delete"> 
                 <input type="hidden" name="hidden" value="{{nazwa}}">
                 <input type="hidden" name="sciezka" value="{{../adres}}">
                 <button onclick="usun(event)" class="delButton">x</button>
