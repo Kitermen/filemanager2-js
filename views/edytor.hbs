@@ -11,7 +11,7 @@
         <div class="formulo">
             <form action="/rename2">
                 <input type="text" name="nazwa">
-                <input type="hidden" name="hidden" value="{{nazwapliku}}">
+                <input type="hidden" name="hidden" value="{{file}}">
                 <button class="ok" type="submit">zmien nazwe</button>
                 <button id="can4" class="cancel" type="button">cancel</button>
             </form>
@@ -19,11 +19,11 @@
         </div>
     </div>
 </dialog>
-<div>nazwa pliku: {{nazwapliku}}</div>
+<div>nazwa pliku: {{file}}</div>
 <form action="/edytor" method="post">
     <div id="numery"></div>
     <textarea name="edytor" id="edytor" cols="30" rows="10" wrap="off" spellcheck="false">{{wyczytamy}}</textarea>
-    <input type="hidden" name="hidek" value="{{nazwapliku}}">
+    <input type="hidden" name="hidek" value="{{file}}">
     <button type="submit">zapisz zmiany</button>
 </form>
 <script src="/js/edytor.js"></script>

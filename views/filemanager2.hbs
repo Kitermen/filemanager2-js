@@ -2,12 +2,12 @@
 
 <aside>
     <button id="new_dir_btn">Nowy folder</button>
-    {{#if adres}}
+    {{#if addresses}}
     <button id="dir_rename_btn">Zmiana nazwy folderu</button>
     {{/if}}
     <button id="new_file_btn">Nowy plik tekstowy</button>
     <form action="/upload" method="post" enctype="multipart/form-data">
-        <input type="hidden" name="sciezka" value="{{adres}}">
+        <input type="hidden" name="sciezka" value="{{addresses}}">
         <input id="hidden" type="file" name="pliki" required multiple>
         <div class="upload-box">
             <label for="hidden">Wybierz pliki</label>
@@ -21,7 +21,7 @@
     <div class="dialogContainer">
         <form action="/newFile" method="get">
             <input pattern="[A-Za-z0-9]{1,18}" type="text" name="input1" id="input1">
-            <input type="hidden" name="sciezka" value="{{adres}}">
+            <input type="hidden" name="sciezka" value="{{addresses}}">
             <select name="extensionSelect">
                 <option value=".txt">.txt</option>
                 <option value=".xml">.xml</option>
@@ -40,7 +40,7 @@
     <div class="dialogContainer">
         <form action="/newFolder" method="get">
             <input type="text" name="input2" id="input2">
-            <input type="hidden" name="sciezka" value="{{adres}}">
+            <input type="hidden" name="sciezka" value="{{addresses}}">
             <button id="ok2" class="ok" type="submit">Dodaj</button>
             <button id="can2" class="cancel" type="button">Anuluj</button>
         </form>
@@ -51,7 +51,7 @@
     <div class="dialogContainer">
         <form action="/rename" method="get">
             <input type="text" name="newName">
-            <input type="hidden" name="location" value="{{adres}}">
+            <input type="hidden" name="location" value="{{addresses}}">
             <button class="ok" type="submit">Zmień</button>
             <button id="can3" class="cancel" type="button">Anuluj</button>
         </form>
@@ -61,8 +61,8 @@
 {{!-- divy --}}
 <main>
     <div class="pathContainer" id="pathContainer">
-        {{#if adres}}
-        {{{settingURL adres}}}
+        {{#if addresses}}
+        {{{settingURL addresses}}}
         {{/if}}
     </div>
 
@@ -70,14 +70,14 @@
         {{!-- katalogi --}}
         {{#each directories }}
         <div>
-            {{#if ../adres}}
-            <a href="/filemanager2?path={{../adres}}/{{nazwa}}">{{nazwa}}</a>
+            {{#if ../addresses}}
+            <a href="/filemanager2?path={{../addresses}}/{{nazwa}}">{{nazwa}}</a>
             {{else}}
             <a href="/filemanager2?path={{nazwa}}">{{nazwa}}</a>
             {{/if}}
             <img src="../gfx/directory.png">
             <form action="/delete"> <input type="hidden" name="hidden" value="{{nazwa}}">
-                <input type="hidden" name="sciezka" value="{{../adres}}">
+                <input type="hidden" name="sciezka" value="{{../addresses}}">
                 <button onclick="del(event)" class="delButton">x</button>
             </form>
         </div>
@@ -90,10 +90,10 @@
         {{#each files}}
         <div>
             {{#if (filesAbleToEdit nazwa) }}
-                {{#if ../adres}}
-                    <a href="/edytor?file={{../adres}}/{{nazwa}}">{{nazwa}}</a>
+                {{#if ../addresses}}
+                    <a class="editAble" href="/edytor?file={{../addresses}}/{{nazwa}}">{{nazwa}}</a>
                 {{else}}
-                    <a href="/edytor?file={{nazwa}}">{{nazwa}}</a>
+                    <a class="editAble" href="/edytor?file={{nazwa}}">{{nazwa}}</a>
                 {{/if}}
             {{else}}
             {{nazwa}}
@@ -101,7 +101,7 @@
             <img src="{{zdjecie}}">
             <form action="/delete"> 
                 <input type="hidden" name="hidden" value="{{nazwa}}">
-                <input type="hidden" name="sciezka" value="{{../adres}}">
+                <input type="hidden" name="sciezka" value="{{../addresses}}">
                 <button onclick="usun(event)" class="delButton">x</button>
             </form>
         </div>

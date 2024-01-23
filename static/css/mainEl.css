@@ -74,3 +74,7 @@ a {
 .pathTeil {
     width: fit-content;
 }
+
+.editAble{
+    color: blue;
+}

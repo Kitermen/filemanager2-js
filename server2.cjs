@@ -29,6 +29,7 @@ app.engine('hbs', hbs({
         filesAbleToEdit: function(nazwa){
             let fileExtHelper = nazwa.split(".");
             if(extensionsArray.includes(fileExtHelper.at(-1).toLowerCase())){
+                console.log("true");
                 return true;
             }
         }
@@ -241,22 +242,22 @@ app.get("/filemanager2", function (req, res) {
                 dirsArray.push(obj);
             }
         })
-        let context = {
+        let locationContent = {
             files: filesArray,
             directories: dirsArray,
-            adres: null
+            addresses: null
         }
 
         if (req.query.path == undefined || req.query.path == "" || !fs.existsSync(insideUploadPath)) {
-            adres = "/filemanager2"
+            addresses = "/filemanager2"
         }
         else {
-            context.adres = req.query.path
+            locationContent.addresses = req.query.path
 
         }
-
-        // console.log("ctx", context);
-        res.render('filemanager2.hbs', context)
+        console.log(locationContent);
+        // console.log("ctx", locationContent);
+        res.render('filemanager2.hbs', locationContent)
     })
 })
 
@@ -396,21 +397,29 @@ app.get("/rename", function (req, res) {
 
 
 app.get("/edytor", function (req, res) {
-    if (req.query.nazwapliku == undefined){
+    console.log("blenderTOP");
+    if (req.query.file == undefined){
+        console.log("AAAA");
         return res.redirect("/filemanager2")
     }
-    let splituje = req.query.nazwapliku.split("/")
-    if (splituje.includes("..") || splituje.includes(".") || req.query.nazwapliku == "") return res.redirect("/filemanager2")
-    if (fs.existsSync(path.join(rootpath, req.query.nazwapliku))) {
-        let splitujemy = req.query.nazwapliku.split(".")
-        if (rozszerzenia.includes(splitujemy.at(-1).toLowerCase())) {
-            fs.readFile(path.join(rootpath, req.query.nazwapliku), (err, data) => {
+    let splituje = req.query.file.split("/")
+    console.log("eseseseses",splituje);
+    if (splituje.includes("..") || splituje.includes(".") || req.query.file == "") {
+        console.log("AHAAAAAAAA");
+        return res.redirect("/filemanager2")
+    }
+    if (fs.existsSync(path.join(uploadDirPath, req.query.file))) {
+        let splitujemy = req.query.file.split(".")
+        console.log("blender");
+        if (extensionsArray.includes(splitujemy.at(-1).toLowerCase())) {
+            fs.readFile(path.join(uploadDirPath, req.query.file), (err, data) => {
                 if (err) throw err
-                let context = {
-                    nazwapliku: req.query.nazwapliku,
+                let locationContent = {
+                    file: req.query.file,
                     wyczytamy: data.toString()
                 }
-                res.render("edytor.hbs", context)
+                console.log("blender");
+                res.render("edytor.hbs", locationContent)
             })
         }
         else{
@@ -420,6 +429,22 @@ app.get("/edytor", function (req, res) {
     } else {
         res.redirect("/filemanager2")
     }
+})
+
+
+app.post("/set", function (req, res) {
+    fs.readFile(path.join(__dirname, "static", "settings.json"), (err, data) => {
+        if (err) throw err
+        res.send(JSON.parse(data.toString()))
+    })
+})
+
+
+app.post("/zapisz", function (req, res) {
+    fs.writeFile(path.join(__dirname, "static", "settings.json"), req.body, (err) => {
+        if (err) throw err
+        res.send("zapisane zmiany")
+    })
 })
 
 
