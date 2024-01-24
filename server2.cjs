@@ -3,33 +3,31 @@ const app = express();
 const PORT = 3300;
 const fs = require("fs");
 const path = require("path");
-const formidable = require("formidable");
 const hbs = require("express-handlebars");
-
+const formidable = require("formidable");
 app.use(express.urlencoded({ extended: true }));
 app.use(express.text());
+
 app.set('views', path.join(__dirname, 'views'));
 app.engine('hbs', hbs({
     extname: '.hbs',
     partialsDir: "views/partials",
     helpers: {
-        settingURL: function(path){
+        settingURL: function (path) {
             let pathElements = path.split("/");
             let pathBox = `<div><a href="/filemanager2" class="pathTeil">home</a></div>`;
             let pathElement = "";
 
-            for(i = 0; i < pathElements.length; i += 1){
+            for (i = 0; i < pathElements.length; i += 1) {
                 pathElement += pathElements[i] + "/";
-                // console.log("countercounter", pathElements[i]);
                 pathBox += `<div><a href="/filemanager2?path=${pathElement}" class="pathTeil">&nbsp;&lt; ${pathElements[i]}</a></div>`;
             }
             return pathBox;
         },
 
-        filesAbleToEdit: function(nazwa){
+        txtExtensions: function (nazwa) {
             let fileExtHelper = nazwa.split(".");
-            if(extensionsArray.includes(fileExtHelper.at(-1).toLowerCase())){
-                console.log("true");
+            if (extensionsArray.includes(fileExtHelper.at(-1).toLowerCase())) {
                 return true;
             }
         }
@@ -77,10 +75,8 @@ app.get("/newFile", function (req, res) {
     }
     else {
         let insideUploadPath = null;
-        // console.log(uploadDirPath);
         if (req.query.sciezka != null) {
             insideUploadPath = path.join(uploadDirPath, req.query.sciezka);
-            // console.log('insideUploadPath2', insideUploadPath);
         }
         else {
             insideUploadPath = uploadDirPath;
@@ -212,8 +208,8 @@ app.get("/newFolder", function (req, res) {
 app.get("/filemanager2", function (req, res) {
     let insideUploadPath = null
     if (req.query.path != undefined) {
-        let splitujemy = req.query.path.split("/")
-        if (req.query.path == "" || splitujemy.includes(".") || splitujemy.includes("..") || !fs.existsSync(path.join(uploadDirPath, req.query.path))) {
+        let pathValidate = req.query.path.split("/")
+        if (req.query.path == "" || pathValidate.includes(".") || pathValidate.includes("..") || !fs.existsSync(path.join(uploadDirPath, req.query.path))) {
             res.redirect("/filemanager2")
             return
         }
@@ -228,7 +224,6 @@ app.get("/filemanager2", function (req, res) {
         files.forEach(file => {
             if (file.isFile()) {
                 let fileExtension = file.name.split(".")[1];
-                // console.log(fileExtension);
                 let obj = {
                     nazwa: file.name,
                     zdjecie: getFileExtension(fileExtension),
@@ -255,8 +250,6 @@ app.get("/filemanager2", function (req, res) {
             locationContent.addresses = req.query.path
 
         }
-        console.log(locationContent);
-        // console.log("ctx", locationContent);
         res.render('filemanager2.hbs', locationContent)
     })
 })
@@ -302,7 +295,6 @@ app.get("/delete", function (req, res) {
 
 
 app.post('/upload', function (req, res) {
-    console.log("LOOOOOL");
     let insideUploadPath = null
     let parsujemy = null
 
@@ -312,7 +304,6 @@ app.post('/upload', function (req, res) {
     form.keepExtensions = true
     form.multiples = true
     form.on("field", (name, field) => {
-        // console.log(field);
         parsujemy = field
         if (field != null) {
             insideUploadPath = path.join(uploadDirPath, field)
@@ -321,13 +312,11 @@ app.post('/upload', function (req, res) {
         }
     })
     form.on("file", (err, plik) => {
-        // console.log(plik);
         if (fs.existsSync(path.join(insideUploadPath, plik.name))) {
 
             let counter = 1
             let poz = plik.name.split(".")
             let nazwa = poz.shift()
-            // console.log(nazwa);
             let nowa = ""
             while (true) {
                 nowa = `${nazwa}_(${counter}).${poz.join(".")}`
@@ -349,7 +338,6 @@ app.post('/upload', function (req, res) {
         }
     })
     form.parse(req)
-    // console.log("RIIIIIIII",req);
     form.on("end", () => {
         if (parsujemy == null) {
             res.redirect("/filemanager2")
@@ -366,7 +354,6 @@ app.get("/rename", function (req, res) {
     let oldDirFullPath = req.query.location
     let renamedDirPath = path.dirname(oldDirFullPath)
     let renamedDirFullPath = path.join(renamedDirPath, req.query.newName)
-    console.log("llll",oldDirFullPath);
 
     if (fs.existsSync(path.join(uploadDirPath, renamedDirFullPath))) {
         let counter = 1
@@ -397,32 +384,27 @@ app.get("/rename", function (req, res) {
 
 
 app.get("/edytor", function (req, res) {
-    console.log("blenderTOP");
-    if (req.query.file == undefined){
-        console.log("AAAA");
+    if (req.query.file == undefined) {
         return res.redirect("/filemanager2")
     }
-    let splituje = req.query.file.split("/")
-    console.log("eseseseses",splituje);
-    if (splituje.includes("..") || splituje.includes(".") || req.query.file == "") {
-        console.log("AHAAAAAAAA");
-        return res.redirect("/filemanager2")
-    }
+    // let fullName = req.query.file.split("/")
+    // if (fullName.includes("..") || fullName.includes(".") || req.query.file == "") {
+    //     return res.redirect("/filemanager2")
+    // }
     if (fs.existsSync(path.join(uploadDirPath, req.query.file))) {
-        let splitujemy = req.query.file.split(".")
-        console.log("blender");
-        if (extensionsArray.includes(splitujemy.at(-1).toLowerCase())) {
+        let extension = req.query.file.split(".")
+        if (extensionsArray.includes(extension.at(-1).toLowerCase())) {
             fs.readFile(path.join(uploadDirPath, req.query.file), (err, data) => {
                 if (err) throw err
                 let locationContent = {
                     file: req.query.file,
-                    wyczytamy: data.toString()
+                    fileContent: data.toString()
                 }
-                console.log("blender");
+                console.log("tak",locationContent.file);
                 res.render("edytor.hbs", locationContent)
             })
         }
-        else{
+        else {
             res.redirect("/filemanager2")
         }
 
@@ -434,7 +416,9 @@ app.get("/edytor", function (req, res) {
 
 app.post("/set", function (req, res) {
     fs.readFile(path.join(__dirname, "static", "settings.json"), (err, data) => {
+        console.log(data.toString());
         if (err) throw err
+        console.log(data.toString());
         res.send(JSON.parse(data.toString()))
     })
 })
@@ -443,8 +427,51 @@ app.post("/set", function (req, res) {
 app.post("/zapisz", function (req, res) {
     fs.writeFile(path.join(__dirname, "static", "settings.json"), req.body, (err) => {
         if (err) throw err
-        res.send("zapisane zmiany")
+        res.send("Zapisano zmiany poprawnie")
     })
+})
+
+
+app.post("/edytor", function (req, res) {
+    fs.writeFile(path.join(uploadDirPath, req.body.hidek), req.body.edytor, (err) => {
+        if (err) throw err
+        console.log("XDDD");
+        res.redirect(`/filemanager2?path=${path.dirname(req.body.hidek)}`)
+    })
+})
+
+
+app.get("/rename2", function (req, res) {
+    let hiden = req.query.hidden
+    let nowanazwa = path.dirname(hiden)
+    let lacze = path.join(nowanazwa, req.query.nazwa)
+
+    if (fs.existsSync(path.join(rootpath, lacze))) {
+        let pom = 1
+        let poz = req.query.nazwa.split(".")
+        let nazwa = poz.shift()
+        let nowa = ""
+        while (true) {
+            nowa = `${nazwa}_(${pom}).${poz.join(".")}`
+            if (fs.existsSync(path.join(uploadDirPath, nowanazwa, nowa))) {
+                pom += 1
+            }
+            else {
+                break
+            }
+        }
+        fs.rename(path.join(uploadDirPath, hiden), path.join(uploadDirPath, nowanazwa, nowa), (err) => {
+            if (err) throw err
+            res.redirect(`/filemanager2?path=${nowanazwa}`)
+        })
+    }
+    else {
+        fs.rename(path.join(uploadDirPath, hiden), path.join(uploadDirPath, lacze), (err) => {
+            if (err) throw err
+            res.redirect(`/filemanager2?path=${nowanazwa}`)
+        })
+    }
+
 })
 
 

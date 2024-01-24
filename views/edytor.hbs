@@ -1,29 +1,31 @@
 <aside>
-    <button id="btn1">powieksz</button><br>
-    <button id="btn2">zmniejsz</button><br>
-    <button id="btn3">kolor</button><br>
-    <button id="btn4">zapisz ustawienia</button><br>
-    <button id="btn5">zmien nazwe</button><br>
+    <button id="bigger_btn">Powiększ</button><br>
+    <button id="smaller_btn">Pomniejsz</button><br>
+    <button id="chg_clr_btn">Zmień kolor</button><br>
+    <button id="save_to_file_btn">Zapisz ustawienia</button><br>
+    <button id="chg_name_btn">Zmień nazwę</button><br>
 </aside>
 
-<dialog id="rename2">
-    <div class="dialogcont">
-        <div class="formulo">
-            <form action="/rename2">
-                <input type="text" name="nazwa">
-                <input type="hidden" name="hidden" value="{{file}}">
-                <button class="ok" type="submit">zmien nazwe</button>
-                <button id="can4" class="cancel" type="button">cancel</button>
-            </form>
-
-        </div>
+<dialog id="rename" class="rename">
+    <div class="dialogContainer">
+        <form action="/rename2" method="get">
+            <input type="text" name="nazwa">
+            <input type="hidden" name="hidden" value="{{file}}">
+            <button class="ok" type="submit">Zmień</button>
+            <button id="can4" class="cancel" type="button">Anuluj</button>
+        </form>
     </div>
 </dialog>
-<div>nazwa pliku: {{file}}</div>
+
+
+<div class="fileName">Nazwa pliku: {{file}}</div>
 <form action="/edytor" method="post">
-    <div id="numery"></div>
-    <textarea name="edytor" id="edytor" cols="30" rows="10" wrap="off" spellcheck="false">{{wyczytamy}}</textarea>
+    <div class="textEditor">
+        <div id="lines" class="lines"></div>
+        <textarea name="edytor" id="edytor" cols="50" rows="10" wrap="off" spellcheck="false">{{fileContent}}</textarea>
+    </div>
     <input type="hidden" name="hidek" value="{{file}}">
-    <button type="submit">zapisz zmiany</button>
+    <button type="submit">Zapisz zmiany</button>
 </form>
+
 <script src="/js/edytor.js"></script>

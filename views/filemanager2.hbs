@@ -47,7 +47,7 @@
     </div>
 </dialog>
 
-<dialog id="rename" class="rename" class="rename">
+<dialog id="rename" class="rename">
     <div class="dialogContainer">
         <form action="/rename" method="get">
             <input type="text" name="newName">
@@ -89,17 +89,17 @@
         {{!-- pliki --}}
         {{#each files}}
         <div>
-            {{#if (filesAbleToEdit nazwa) }}
-                {{#if ../addresses}}
-                    <a class="editAble" href="/edytor?file={{../addresses}}/{{nazwa}}">{{nazwa}}</a>
-                {{else}}
-                    <a class="editAble" href="/edytor?file={{nazwa}}">{{nazwa}}</a>
-                {{/if}}
+            {{#if (txtExtensions nazwa) }}
+            {{#if ../addresses}}
+            <a class="editAble" href="/edytor?file={{../addresses}}/{{nazwa}}">{{nazwa}}</a>
+            {{else}}
+            <a class="editAble" href="/edytor?file={{nazwa}}">{{nazwa}}</a>
+            {{/if}}
             {{else}}
             {{nazwa}}
             {{/if}}
             <img src="{{zdjecie}}">
-            <form action="/delete"> 
+            <form action="/delete">
                 <input type="hidden" name="hidden" value="{{nazwa}}">
                 <input type="hidden" name="sciezka" value="{{../addresses}}">
                 <button onclick="usun(event)" class="delButton">x</button>

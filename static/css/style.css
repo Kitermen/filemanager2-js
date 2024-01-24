@@ -1,7 +1,8 @@
-@import url('./fileUpload.css');
-@import url('./nav.css');
-@import url('./mainEl.css');
+@import url('./file-upload.css');
+@import url('./navbar.css');
+@import url('./main-element.css');
 @import url('./dialog.css');
+@import url('./edytor.css');
 
 * {
     font-family: monospace;
@@ -10,10 +11,3 @@
     overflow-y: hidden;
     overflow-x: hidden;
 }
-
-
-
-
-
-
-
