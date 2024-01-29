@@ -1,12 +1,18 @@
 .fileName {
     text-align: center;
     font-size: 22px;
-    margin: 20px;
+    margin: 30px;
+    white-space: nowrap;
+}
+
+.fileName > div{
+    display: inline-block;
 }
 
 .lines{
     width: 30px;
     text-align: center;
+    user-select: none;
 }
 
 textarea{
@@ -14,6 +20,7 @@ textarea{
     border: none;
     border-left: 2px solid darkgray;
     overflow: auto;
+    resize: none;
 }
 
 textarea:focus{
@@ -28,4 +35,17 @@ textarea:focus{
     flex-direction: row;
     border: 2px solid black;
     margin: 5px 10px 5px 10px;
+}
+
+.chgNameBtn{
+    margin-top: 50px;
+}
+
+.saveChanges{
+    width: 704px;
+    text-align: center;
+    border: 2px solid black;
+    font-size: 20px;
+    margin-left: 10px;
+    cursor: pointer;
 }

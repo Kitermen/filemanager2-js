@@ -1,9 +1,9 @@
-<script src="../js/script.js" defer></script>
+<script src="/js/app-functionality.js" defer></script>
 
 <aside>
     <button id="new_dir_btn">Nowy folder</button>
     {{#if addresses}}
-    <button id="dir_rename_btn">Zmiana nazwy folderu</button>
+    <button id="dir_rename">Zmiana nazwy folderu</button>
     {{/if}}
     <button id="new_file_btn">Nowy plik tekstowy</button>
     <form action="/upload" method="post" enctype="multipart/form-data">
@@ -39,7 +39,7 @@
 <dialog id="newfolder" class="new-dir">
     <div class="dialogContainer">
         <form action="/newFolder" method="get">
-            <input type="text" name="input2" id="input2">
+            <input pattern="[A-Za-z0-9]{1,18}" type="text" name="input2" id="input2">
             <input type="hidden" name="sciezka" value="{{addresses}}">
             <button id="ok2" class="ok" type="submit">Dodaj</button>
             <button id="can2" class="cancel" type="button">Anuluj</button>
@@ -50,7 +50,7 @@
 <dialog id="rename" class="rename">
     <div class="dialogContainer">
         <form action="/rename" method="get">
-            <input type="text" name="newName">
+            <input pattern="[A-Za-z0-9]{1,18}" type="text" name="newName">
             <input type="hidden" name="location" value="{{addresses}}">
             <button class="ok" type="submit">Zmień</button>
             <button id="can3" class="cancel" type="button">Anuluj</button>
@@ -102,7 +102,7 @@
             <form action="/delete">
                 <input type="hidden" name="hidden" value="{{nazwa}}">
                 <input type="hidden" name="sciezka" value="{{../addresses}}">
-                <button onclick="usun(event)" class="delButton">x</button>
+                <button onclick="del(event)" class="delButton">x</button>
             </form>
         </div>
         {{/each}}

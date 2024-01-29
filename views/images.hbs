@@ -1,0 +1,29 @@
+<aside>
+    <button id="btn1">Podgląd pliku</button><br>
+    <button id="filters_btn">Filtry</button><br>
+    <button id="save_img">Zapisz obraz</button><br>
+    <button id="img_rename">Zmień nazwę</button><br>
+</aside>
+<div id="filters_menu">
+    {{#each tab}}
+    <div style="height: 20%;" onclick="canvas('{{.}}')">
+        <div class="filter" style="background-image: url('{{../file}}'); filter:{{.}}(100%)"></div>
+        <p>{{.}}</p>
+    </div>
+    {{/each}}
+</div>
+
+<dialog id="rename_dialog" class="rename">
+    <div class="dialogContainer">
+        <form action="/renameFile">
+            <input pattern="[A-Za-z0-9]{1,18}" type="text" name="fileName">
+            <input type="hidden" name="fullPath" value="{{file}}">
+            <button class="ok" type="submit">Zmień</button>
+            <button id="can4" class="cancel" type="button">Anuluj</button>
+        </form>
+    </div>
+</dialog>
+
+<div class="fileName"><div>Nazwa pliku:&nbsp;</div><div id="file_name">{{file}}</div></div>
+<canvas id="canvas"></canvas>
+<script src="/js/app-images.js"></script>

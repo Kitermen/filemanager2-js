@@ -1,8 +1,9 @@
-@import url('./file-upload.css');
+@import url('./upload.css');
 @import url('./navbar.css');
-@import url('./main-element.css');
+@import url('./container.css');
 @import url('./dialog.css');
 @import url('./edytor.css');
+@import url('./images.css');
 
 * {
     font-family: monospace;

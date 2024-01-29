@@ -1,0 +1,80 @@
+main {
+    padding: 20px;
+}
+
+main img {
+    width: 80px;
+}
+
+.delButton {
+    width: fit-content;
+    height: fit-content;
+    padding: 0px 5px 0px 5px;
+    background-color: wheat;
+    font-size: 17px;
+    cursor: pointer;
+}
+
+.fileContainer>div>form {
+    width: fit-content;
+}
+
+.directoriesContainer {
+    display: flex;
+    align-items: center;
+    flex-flow: row wrap;
+    margin: 30px 0px 30px 0px;
+}
+
+.fileContainer {
+    display: flex;
+    align-items: center;
+    flex-flow: row wrap;
+}
+
+.directoriesContainer>div {
+    background-color: whitesmoke;
+    width: fit-content;
+    padding: 10px;
+    margin: 5px;
+    border: 2px solid black;
+    border-radius: 10px;
+    font-size: 15px;
+}
+
+.fileContainer>div {
+    background-color: whitesmoke;
+    width: fit-content;
+    padding: 10px;
+    margin: 5px;
+    border: 2px solid black;
+    border-radius: 10px;
+    font-size: 15px;
+    /* text-overflow: ellipsis; */
+}
+
+.pathContainer {
+    font-size: 20px;
+    border: 2px solid black;
+    border-radius: 10px;
+    background-color: whitesmoke;
+    padding: 8px;
+    position: relative;
+    left: 5px;
+    width: fit-content;
+    display: flex;
+    flex-direction: row;
+}
+
+a {
+    text-decoration: none;
+    color: black;
+}
+
+.pathTeil {
+    width: fit-content;
+}
+
+.editAble{
+    color: blue;
+}

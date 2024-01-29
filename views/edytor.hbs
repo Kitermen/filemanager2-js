@@ -3,14 +3,14 @@
     <button id="smaller_btn">Pomniejsz</button><br>
     <button id="chg_clr_btn">Zmień kolor</button><br>
     <button id="save_to_file_btn">Zapisz ustawienia</button><br>
-    <button id="chg_name_btn">Zmień nazwę</button><br>
+    <button id="txt_rename" class="chgNameBtn">Zmień nazwę</button><br>
 </aside>
 
-<dialog id="rename" class="rename">
+<dialog id="rename_dialog" class="rename">
     <div class="dialogContainer">
-        <form action="/rename2" method="get">
-            <input type="text" name="nazwa">
-            <input type="hidden" name="hidden" value="{{file}}">
+        <form action="/renameFile" method="get">
+            <input pattern="[A-Za-z0-9]{1,18}" type="text" name="fileName">
+            <input type="hidden" name="fullPath" value="{{file}}">
             <button class="ok" type="submit">Zmień</button>
             <button id="can4" class="cancel" type="button">Anuluj</button>
         </form>
@@ -19,13 +19,13 @@
 
 
 <div class="fileName">Nazwa pliku: {{file}}</div>
-<form action="/edytor" method="post">
+<form action="/saveTxt" method="post">
     <div class="textEditor">
         <div id="lines" class="lines"></div>
         <textarea name="edytor" id="edytor" cols="50" rows="10" wrap="off" spellcheck="false">{{fileContent}}</textarea>
     </div>
-    <input type="hidden" name="hidek" value="{{file}}">
-    <button type="submit">Zapisz zmiany</button>
+    <input type="hidden" name="fullPath" value="{{file}}">
+    <button type="submit" class="saveChanges">Zapisz zmiany</button>
 </form>
 
-<script src="/js/edytor.js"></script>
+<script src="/js/app-edytor.js"></script>
