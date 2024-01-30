@@ -8,15 +8,15 @@ canvas{
 }
 
 .filter {
-    width: 200px;
-    height: 40%;
+    width: 80%;
+    height: 80%;
+    margin: 10px auto 10px auto;
     background-repeat: no-repeat;
     background-size: contain;
+    cursor: pointer;
 }
 
-
-
-#filters_menu {
+.filters_menu {
     width: 0%;
     height: 90vh;
     margin-top: 30px;
@@ -26,4 +26,12 @@ canvas{
     float: left;
     transition: 1s;
 }
+
+.filters_menu p {
+    width: 100%;
+    text-align: center;
+    font-size: 20px;
+}
+
+
 

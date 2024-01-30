@@ -4,11 +4,11 @@
     <button id="save_img">Zapisz obraz</button><br>
     <button id="img_rename">Zmień nazwę</button><br>
 </aside>
-<div id="filters_menu">
+<div id="filters_menu" class="filters_menu">
     {{#each tab}}
-    <div style="height: 20%;" onclick="canvas('{{.}}')">
-        <div class="filter" style="background-image: url('{{../file}}'); filter:{{.}}(100%)"></div>
+    <div style="height: 20%; width: 100%;" onclick="canvas('{{.}}')">
         <p>{{.}}</p>
+        <div class="filter" style="background-image: url('{{../file}}'); filter:{{.}}(100%)"></div>
     </div>
     {{/each}}
 </div>
