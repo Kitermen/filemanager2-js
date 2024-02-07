@@ -5,7 +5,10 @@ const fs = require("fs");
 const path = require("path");
 const hbs = require("express-handlebars");
 const formidable = require("formidable");
-const { log } = require("console");
+const cookieparser = require("cookie-parser");
+app.use(cookieparser());
+const nocache = require("nocache");
+app.use(nocache())
 app.use(express.urlencoded({ extended: true }));
 app.use(express.text());
 
@@ -48,6 +51,13 @@ let dirsArray = [];
 const extensionsArray = ["txt", "xml", "json", "html", "css", "js"];
 const allExtensionsArray = ["txt", "xml", "json", "html", "css", "js", "jpg", "jpeg", "png"];
 
+const Datastore = require('nedb')
+
+const passes = new Datastore({
+    filename: 'passes.db',
+    autoload: true
+});
+
 function getFileExtension(extension) {
     let ext = "";
     switch (extension) {
@@ -67,11 +77,66 @@ function getFileExtension(extension) {
     return ext;
 }
 
-//////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////
 
 app.get("/", function (req, res) {
-    res.redirect('/filemanager2');
-})
+    res.redirect('/register');
+});
+
+
+app.get("/register", function (req, res) {
+    res.render('register.hbs');
+});
+
+
+app.post("/registerSub", function (req, res) {
+    const login = req.body.regName;
+    const password = req.body.regPass;
+    const password2 = req.body.validPass;
+    console.log(req.body);
+    if(password == password2){
+        passes.count({ a: login }, function (err, count) {
+            console.log("powtorek jest: ", count)
+            if(count == 0){
+                const doc = {a: login, b: password};
+                passes.insert(doc)
+                res.redirect("/login");
+            }
+            else{
+                res.redirect("/error");
+            }
+        })
+    }
+    else{
+        res.redirect("/error");
+    }
+        
+});
+
+
+app.get("/login", function (req, res) {
+    res.render('login.hbs');
+});
+
+
+app.post("/loginSub", function (req, res) {
+    const login = req.body.logName;
+    const password = req.body.logPass;
+    passes.count({ a: login }, function (err, countLog) {
+        passes.count({ b: password }, function (err, countPass) {
+            if(countLog == 1 && countPass == 1){
+                console.log("gtaulacje uzytkowniku");
+            }
+        })
+    })
+    res.redirect("/login");
+});
+
+
+app.get("/error", function (req, res) {
+    res.render('error.hbs');
+});
+
 
 app.get("/newFile", function (req, res) {
     const fullFileName = `${req.query.input1}${req.query.extensionSelect}`;
@@ -431,6 +496,7 @@ app.post("/set", function (req, res) {
 
 
 app.post("/saveLayout", function (req, res) {
+    console.log(req.body);
     fs.writeFile(path.join(__dirname, "static", "settings.json"), req.body, (err) => {
         if (err) throw err
         res.send("Zapisano zmiany poprawnie")
