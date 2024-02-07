@@ -19,7 +19,7 @@ app.engine('hbs', hbs({
     helpers: {
         settingURL: function (path) {
             let pathElements = path.split("/");
-            let pathBox = `<div><a href="/filemanager2" class="pathTeil">home</a></div>`;
+            let pathBox = `<div class="pathTeil">Structure:</a></div>`;
             let pathElement = "";
 
             for (i = 0; i < pathElements.length; i += 1) {
@@ -27,7 +27,7 @@ app.engine('hbs', hbs({
                 if(pathElement[pathElement.length - 1] && pathElement[pathElement.length - 2] == "/"){
                     pathElement = pathElement.slice(0, pathElement.length - 1)
                 }
-                pathBox += `<div><a href="/filemanager2?path=${pathElement}" class="pathTeil">&nbsp;&gt; ${pathElements[i]}</a></div>`;  
+                pathBox += `<div><a href="/filemanager2?path=${pathElement}" class="pathTeil">&nbsp;${pathElements[i]}&nbsp;&gt;</a></div>`;  
             }
             return pathBox;
         },
@@ -98,8 +98,11 @@ app.post("/registerSub", function (req, res) {
         passes.count({ a: login }, function (err, count) {
             console.log("powtorek jest: ", count)
             if(count == 0){
-                const doc = {a: login, b: password};
-                passes.insert(doc)
+                const data = {a: login, b: password};
+                passes.insert(data);
+                fs.mkdir(path.join(uploadDirPath, login), (err) => {
+                    if (err) throw err
+                })
                 res.redirect("/login");
             }
             else{
@@ -125,11 +128,13 @@ app.post("/loginSub", function (req, res) {
     passes.count({ a: login }, function (err, countLog) {
         passes.count({ b: password }, function (err, countPass) {
             if(countLog == 1 && countPass == 1){
-                console.log("gtaulacje uzytkowniku");
+                res.redirect("/filemanager2?path=" + login)
+            }
+            else{
+                res.redirect("/error");
             }
         })
     })
-    res.redirect("/login");
 });
 
 
