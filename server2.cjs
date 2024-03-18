@@ -93,17 +93,21 @@ app.post("/registerSub", function (req, res) {
     const login = req.body.regName;
     const password = req.body.regPass;
     const password2 = req.body.validPass;
-    console.log(req.body);
     if(password == password2){
         passes.count({ a: login }, function (err, count) {
             console.log("powtorek jest: ", count)
             if(count == 0){
                 const data = {a: login, b: password};
                 passes.insert(data);
-                fs.mkdir(path.join(uploadDirPath, login), (err) => {
-                    if (err) throw err
-                })
-                res.redirect("/login");
+                if (fs.existsSync(path.join(uploadDirPath, login))) {
+                    res.redirect("/error");
+                }
+                else{
+                    fs.mkdir(path.join(uploadDirPath, login), (err) => {
+                        if (err) throw err
+                    })
+                    res.redirect("/login");
+                }
             }
             else{
                 res.redirect("/error");
@@ -112,15 +116,12 @@ app.post("/registerSub", function (req, res) {
     }
     else{
         res.redirect("/error");
-    }
-        
+    } 
 });
-
 
 app.get("/login", function (req, res) {
     res.render('login.hbs');
 });
-
 
 app.post("/loginSub", function (req, res) {
     const login = req.body.logName;
@@ -128,6 +129,7 @@ app.post("/loginSub", function (req, res) {
     passes.count({ a: login }, function (err, countLog) {
         passes.count({ b: password }, function (err, countPass) {
             if(countLog == 1 && countPass == 1){
+                res.cookie("login", login, { httpOnly: true, maxAge: 5 * 1000 });
                 res.redirect("/filemanager2?path=" + login)
             }
             else{
@@ -281,52 +283,57 @@ app.get("/newFolder", function (req, res) {
 
 
 app.get("/filemanager2", function (req, res) {
-    let insideUploadPath = null
-    if (req.query.path != undefined) {
-        let pathValidate = req.query.path.split("/")
-        if (req.query.path == "" || pathValidate.includes(".") || pathValidate.includes("..") || !fs.existsSync(path.join(uploadDirPath, req.query.path))) {
-            res.redirect("/filemanager2")
-            return
-        }
-        insideUploadPath = path.join(uploadDirPath, req.query.path)
+    if(req.cookies.login == undefined){
+        res.redirect("/error");
     }
-    else {
-        insideUploadPath = uploadDirPath
-    }
-    fs.readdir(insideUploadPath, { withFileTypes: true }, (err, files) => {
-        filesArray = []
-        dirsArray = []
-        files.forEach(file => {
-            if (file.isFile()) {
-                let fileExtension = file.name.split(".")[1];
-                let obj = {
-                    nazwa: file.name,
-                    zdjecie: getFileExtension(fileExtension),
-                }
-                filesArray.push(obj)
+    else{
+        let insideUploadPath = null
+        if (req.query.path != undefined) {
+            let pathValidate = req.query.path.split("/")
+            if (req.query.path == "" || pathValidate.includes(".") || pathValidate.includes("..") || !fs.existsSync(path.join(uploadDirPath, req.query.path))) {
+                res.redirect("/filemanager2")
+                return
             }
-            else {
-                let obj = {
-                    nazwa: file.name,
-                }
-                dirsArray.push(obj);
-            }
-        })
-        let locationContent = {
-            files: filesArray,
-            directories: dirsArray,
-            addresses: null
-        }
-
-        if (req.query.path == undefined || req.query.path == "" || !fs.existsSync(insideUploadPath)) {
-            addresses = "/filemanager2"
+            insideUploadPath = path.join(uploadDirPath, req.query.path)
         }
         else {
-            locationContent.addresses = req.query.path
-
+            insideUploadPath = uploadDirPath
         }
-        res.render('filemanager2.hbs', locationContent)
-    })
+        fs.readdir(insideUploadPath, { withFileTypes: true }, (err, files) => {
+            filesArray = []
+            dirsArray = []
+            files.forEach(file => {
+                if (file.isFile()) {
+                    let fileExtension = file.name.split(".")[1];
+                    let obj = {
+                        nazwa: file.name,
+                        zdjecie: getFileExtension(fileExtension),
+                    }
+                    filesArray.push(obj)
+                }
+                else {
+                    let obj = {
+                        nazwa: file.name,
+                    }
+                    dirsArray.push(obj);
+                }
+            })
+            let locationContent = {
+                files: filesArray,
+                directories: dirsArray,
+                addresses: null
+            }
+    
+            if (req.query.path == undefined || req.query.path == "" || !fs.existsSync(insideUploadPath)) {
+                addresses = "/filemanager2"
+            }
+            else {
+                locationContent.addresses = req.query.path
+    
+            }
+            res.render('filemanager2.hbs', locationContent)
+        })
+    }
 })
 
 
