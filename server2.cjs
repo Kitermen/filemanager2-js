@@ -144,6 +144,10 @@ app.get("/error", function (req, res) {
     res.render('error.hbs');
 });
 
+app.get("/logOut", function (req, res) {
+    res.clearCookie("login");
+    res.redirect('/login');
+});
 
 app.get("/newFile", function (req, res) {
     const fullFileName = `${req.query.input1}${req.query.extensionSelect}`;
